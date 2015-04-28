@@ -52,7 +52,7 @@ anova(g3, g4, test = "F")
 
 
 results_te <- results_all_chroms
-results_te$X6 <- "Day-3 TE"
+results_te$X6 <- "Day-5 TE"
 
 ##########################################################
 
