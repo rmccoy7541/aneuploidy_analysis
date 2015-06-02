@@ -1,10 +1,11 @@
 #################################################################
-# This file generates Figure 3: a plot of overall proportion of #
-# aneuploid embryos with increasing maternal age. 		        #
+# This file generates a plot of overall proportion of           #
+# aneuploid embryos with increasing maternal age. 		          #
 #################################################################
 
 library(ggplot2)
 library(gridExtra)
+library(pscl)
 source("~/Desktop/aneuploidy_analysis-master/aneuploidy_functions.R")
 
 data <- read.table("~/Desktop/aneuploidy_analysis-master/upload.csv", sep=",", header=T) # import the data
@@ -61,8 +62,9 @@ aneuploid_binom <- merge(aneuploid_binom, donor, "i")
 
 g4 <- glm(data = aneuploid_binom, formula = cbind(aneuploid_1, aneuploid_0) ~ maternal_age + I(maternal_age^2) + I(maternal_age^3) + donor, family = quasibinomial(link = "logit"))
 
-anova(g3, g4, test = "F")
+anova(g2, g4, test = "F")
 
+pR2(g2)
 
 results_blastomere <- results_all_chroms
 results_blastomere$X6 <- "Day-3 Blastomere"
@@ -71,7 +73,7 @@ results_blastomere$X6 <- "Day-3 Blastomere"
 
 data_te <- selectSampleType(data_filtered, TE)
 
-data_te <- callPloidy(data_TE)
+data_te <- callPloidy(data_te)
 
 #################################################################
 
@@ -89,10 +91,9 @@ g2 <- glm(data = aneuploid_binom, formula = cbind(aneuploid_1, aneuploid_0) ~ ma
 
 anova(g1, g2, test="F")
 
-# Fit model to data
-g3 <- glm(data = aneuploid_binom, formula = cbind(aneuploid_1, aneuploid_0) ~ maternal_age + I(maternal_age^2) + I(maternal_age^3) + I(maternal_age^4), family = quasibinomial(link = "logit"))
-
-anova(g2, g3, test = "F")
+sum(residuals(g1, type = "pearson")^2)
+deviance(g1)
+pchisq(deviance(g1), df.residual(g1))
 
 # Use model to predict aneuploidy based on age
 prediction_frame <- data.frame("maternal_age" = seq(20,48,1))
