@@ -1,7 +1,7 @@
 #################################################################
 # This file generates a plot of maternal vs. paternal and gain  #
 # vs. loss aneuploidy versus the total number of chromosomes    #
-# affected.						                  		        #
+# affected.                                                     #
 #################################################################
 
 library(ggplot2)
