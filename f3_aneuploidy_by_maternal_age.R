@@ -1,6 +1,6 @@
 #################################################################
 # This file generates a plot of overall proportion of           #
-# aneuploid embryos with increasing maternal age. 		          #
+# aneuploid embryos with increasing maternal age.               #
 #################################################################
 
 library(ggplot2)
