@@ -1,6 +1,6 @@
 #################################################################
 # This file generates a plot of overall proportion of mBPH      #
-# aneuploid embryos with increasing maternal age. 		        #
+# aneuploid embryos with increasing maternal age.               #
 #################################################################
 
 library(ggplot2)
