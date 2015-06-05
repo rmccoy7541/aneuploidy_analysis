@@ -1,9 +1,12 @@
 library(ggplot2)
 library(gridExtra)
 library(gtable)
+library(RCurl)
+source("~/Desktop/aneuploidy_analysis-master/aneuploidy_functions.R")
 
-# import the data file from Dryad
-data<-read.table("~/Desktop/aneuploidy_analysis-master/upload.csv", sep=",", header=T)
+URL <- "https://raw.githubusercontent.com/rmccoy7541/aneuploidy-analysis/master/data/aaa3337-McCoy-SM.table_S2.csv" # import the data
+url <- getURL(URL)
+data <- read.table(textConnection(url), sep=",", header=T)
 
 data_calls<-data[,7:29]; nrow(data_calls)
 data_calls<-data_calls[(apply(data_calls, 1, function(x) sum(is.na(x)))<5),]; nrow(data_calls) # remove samples with 5+ no-calls
