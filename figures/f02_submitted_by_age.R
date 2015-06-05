@@ -4,6 +4,7 @@
 
 library(ggplot2)
 library(gridExtra)
+library(RCurl)
 source("~/Desktop/aneuploidy_functions.R")
 
 URL <- "https://raw.githubusercontent.com/rmccoy7541/aneuploidy-analysis/master/data/aaa3337-McCoy-SM.table_S2.csv" # import the data
