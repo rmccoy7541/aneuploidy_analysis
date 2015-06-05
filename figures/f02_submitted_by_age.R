@@ -6,7 +6,9 @@ library(ggplot2)
 library(gridExtra)
 source("~/Desktop/aneuploidy_functions.R")
 
-data <- read.table("~/Desktop/upload.csv", sep=",", header=T) # import the data
+URL <- "https://raw.githubusercontent.com/rmccoy7541/aneuploidy-analysis/master/data/aaa3337-McCoy-SM.table_S2.csv" # import the data
+url <- getURL(URL)
+data <- read.table(textConnection(url), sep=",", header=T)
 
 data_blastomere <- selectSampleType(data, blastomere)
 
