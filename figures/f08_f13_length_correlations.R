@@ -9,7 +9,9 @@ library(gridExtra)
 library(gtable)
 source("~/Desktop/aneuploidy_analysis-master/aneuploidy_functions.R")
 
-data <- read.table("~/Desktop/aneuploidy_analysis-master/upload.csv", sep=",", header=T) # import the data
+URL <- "https://raw.githubusercontent.com/rmccoy7541/aneuploidy-analysis/master/data/aaa3337-McCoy-SM.table_S2.csv" # import the data
+url <- getURL(URL)
+data <- read.table(textConnection(url), sep=",", header=T)
 
 data_filtered <- filterData(data)
 
