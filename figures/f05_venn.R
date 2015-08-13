@@ -4,13 +4,290 @@
 
 library(ggplot2)
 library(gridExtra)
-library(VennDiagram)
 library(RCurl)
 source("~/Desktop/aneuploidy_analysis-master/aneuploidy_functions.R")
 
 URL <- "https://raw.githubusercontent.com/rmccoy7541/aneuploidy-analysis/master/data/aaa3337-McCoy-SM.table_S2.csv" # import the data
 url <- getURL(URL)
 data <- read.table(textConnection(url), sep=",", header=T)
+
+#################################################################
+# from http://stackoverflow.com/questions/28874088/change-the-digits-of-numbers-in-venndiagram
+#################################################################
+
+draw.quintuple.venn_mod <- function (area1, area2, area3, area4, area5, n12, n13, n14, n15, 
+                                     n23, n24, n25, n34, n35, n45, n123, n124, n125, n134, n135, 
+                                     n145, n234, n235, n245, n345, n1234, n1235, n1245, n1345, 
+                                     n2345, n12345, category = rep("", 5),
+                                     lwd = rep(2, 5), lty = rep("solid", 5),
+                                     col = rep("black", 5), fill = NULL, alpha = rep(0.5, 5), 
+                                     label.col = rep("black", 31), cex = rep(1, 31), 
+                                     fontface = rep("plain", 31), fontfamily = rep("sans", 31), 
+                                     cat.pos = c(0, 287.5, 215, 145, 70), cat.dist = rep(0.2, 5), cat.col = rep("black", 5), cat.cex = rep(1, 5), cat.fontface = rep("plain", 5), cat.fontfamily = rep("sans", 5), cat.just = rep(list(c(0.5, 0.5)), 5), rotation.degree = 0, rotation.centre = c(0.5, 0.5), ind = TRUE, 
+                                     dig = 2, ...) # add a parameter for number of digits by which to round your values
+{
+    if (length(category) == 1) {
+        cat <- rep(category, 5)
+    }
+    else if (length(category) != 5) {
+        stop("Unexpected parameter length for 'category'")
+    }
+    if (length(lwd) == 1) {
+        lwd <- rep(lwd, 5)
+    }
+    else if (length(lwd) != 5) {
+        stop("Unexpected parameter length for 'lwd'")
+    }
+    if (length(lty) == 1) {
+        lty <- rep(lty, 5)
+    }
+    else if (length(lty) != 5) {
+        stop("Unexpected parameter length for 'lty'")
+    }
+    if (length(col) == 1) {
+        col <- rep(col, 5)
+    }
+    else if (length(col) != 5) {
+        stop("Unexpected parameter length for 'col'")
+    }
+    if (length(label.col) == 1) {
+        label.col <- rep(label.col, 31)
+    }
+    else if (length(label.col) != 31) {
+        stop("Unexpected parameter length for 'label.col'")
+    }
+    if (length(cex) == 1) {
+        cex <- rep(cex, 31)
+    }
+    else if (length(cex) != 31) {
+        stop("Unexpected parameter length for 'cex'")
+    }
+    if (length(fontface) == 1) {
+        fontface <- rep(fontface, 31)
+    }
+    else if (length(fontface) != 31) {
+        stop("Unexpected parameter length for 'fontface'")
+    }
+    if (length(fontfamily) == 1) {
+        fontfamily <- rep(fontfamily, 31)
+    }
+    else if (length(fontfamily) != 31) {
+        stop("Unexpected parameter length for 'fontfamily'")
+    }
+    if (length(fill) == 1) {
+        fill <- rep(fill, 5)
+    }
+    else if (length(fill) != 5 & length(fill) != 0) {
+        stop("Unexpected parameter length for 'fill'")
+    }
+    if (length(alpha) == 1) {
+        alpha <- rep(alpha, 5)
+    }
+    else if (length(alpha) != 5 & length(alpha) != 0) {
+        stop("Unexpected parameter length for 'alpha'")
+    }
+    if (length(cat.pos) == 1) {
+        cat.pos <- rep(cat.pos, 5)
+    }
+    else if (length(cat.pos) != 5) {
+        stop("Unexpected parameter length for 'cat.pos'")
+    }
+    if (length(cat.dist) == 1) {
+        cat.dist <- rep(cat.dist, 5)
+    }
+    else if (length(cat.dist) != 5) {
+        stop("Unexpected parameter length for 'cat.dist'")
+    }
+    if (length(cat.col) == 1) {
+        cat.col <- rep(cat.col, 5)
+    }
+    else if (length(cat.col) != 5) {
+        stop("Unexpected parameter length for 'cat.col'")
+    }
+    if (length(cat.cex) == 1) {
+        cat.cex <- rep(cat.cex, 5)
+    }
+    else if (length(cat.cex) != 5) {
+        stop("Unexpected parameter length for 'cat.cex'")
+    }
+    if (length(cat.fontface) == 1) {
+        cat.fontface <- rep(cat.fontface, 5)
+    }
+    else if (length(cat.fontface) != 5) {
+        stop("Unexpected parameter length for 'cat.fontface'")
+    }
+    if (length(cat.fontfamily) == 1) {
+        cat.fontfamily <- rep(cat.fontfamily, 5)
+    }
+    else if (length(cat.fontfamily) != 5) {
+        stop("Unexpected parameter length for 'cat.fontfamily'")
+    }
+    if (!(class(cat.just) == "list" & length(cat.just) == 5 & 
+        length(cat.just[[1]]) == 2 & length(cat.just[[2]]) == 
+        2 & length(cat.just[[3]]) == 2 & length(cat.just[[4]]) == 
+        2 & length(cat.just[[5]]) == 2)) {
+        stop("Unexpected parameter format for 'cat.just'")
+    }
+    cat.pos <- cat.pos + rotation.degree
+# for each a.., modify the computation to add a rounding step
+    a31 <- round(n12345, dig)
+    a30 <- round(n1234 - a31, dig)
+    a29 <- round(n1235 - a31, dig)
+    a28 <- round(n1245 - a31, dig)
+    a27 <- round(n1345 - a31, dig)
+    a26 <- round(n2345 - a31, dig)
+    a25 <- round(n245 - a26 - a28 - a31, dig)
+    a24 <- round(n234 - a26 - a30 - a31, dig)
+    a23 <- round(n134 - a27 - a30 - a31, dig)
+    a22 <- round(n123 - a29 - a30 - a31, dig)
+    a21 <- round(n235 - a26 - a29 - a31, dig)
+    a20 <- round(n125 - a28 - a29 - a31, dig)
+    a19 <- round(n124 - a28 - a30 - a31, dig)
+    a18 <- round(n145 - a27 - a28 - a31, dig)
+    a17 <- round(n135 - a27 - a29 - a31, dig)
+    a16 <- round(n345 - a26 - a27 - a31, dig)
+    a15 <- round(n45 - a18 - a25 - a16 - a28 - a27 - a26 - a31, dig)
+    a14 <- round(n24 - a19 - a24 - a25 - a30 - a28 - a26 - a31, dig)
+    a13 <- round(n34 - a16 - a23 - a24 - a26 - a27 - a30 - a31, dig)
+    a12 <- round(n13 - a17 - a22 - a23 - a27 - a29 - a30 - a31, dig)
+    a11 <- round(n23 - a21 - a22 - a24 - a26 - a29 - a30 - a31, dig)
+    a10 <- round(n25 - a20 - a21 - a25 - a26 - a28 - a29 - a31, dig)
+    a9 <- round(n12 - a19 - a20 - a22 - a28 - a29 - a30 - a31, dig)
+    a8 <- round(n14 - a18 - a19 - a23 - a27 - a28 - a30 - a31, dig)
+    a7 <- round(n15 - a17 - a18 - a20 - a27 - a28 - a29 - a31, dig)
+    a6 <- round(n35 - a16 - a17 - a21 - a26 - a27 - a29 - a31, dig)
+    a5 <- round(area5 - a6 - a7 - a15 - a16 - a17 - a18 - a25 - a26 - 
+        a27 - a28 - a31 - a20 - a29 - a21 - a10, dig)
+    a4 <- round(area4 - a13 - a14 - a15 - a16 - a23 - a24 - a25 - a26 - 
+        a27 - a28 - a31 - a18 - a19 - a8 - a30, dig)
+    a3 <- round(area3 - a21 - a11 - a12 - a13 - a29 - a22 - a23 - a24 - 
+        a30 - a31 - a26 - a27 - a16 - a6 - a17, dig)
+    a2 <- round(area2 - a9 - a10 - a19 - a20 - a21 - a11 - a28 - a29 - 
+        a31 - a22 - a30 - a26 - a25 - a24 - a14, dig)
+    a1 <- round(area1 - a7 - a8 - a18 - a17 - a19 - a9 - a27 - a28 - 
+        a31 - a20 - a30 - a29 - a22 - a23 - a12, dig)
+    areas <- c(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, 
+        a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, 
+        a23, a24, a25, a26, a27, a28, a29, a30, a31)
+    areas.error <- c("a1 <- area1 - a7 - a8 - a18 - a17 - a19 - a9 - a27 - a28 - a31 - a20 - a30 - a29 - a22 - a23 - a12", 
+        "a2 <- area2 - a9 - a10 - a19 - a20 - a21 - a11 - a28 - a29 - a31 - a22 - a30 - a26 - a25 - a24 - a14", 
+        "a3 <- area3 - a21 - a11 - a12 - a13 - a29 - a22 - a23 - a24 - a30 - a31 - a26 - a27 - a16 - a6 - a17", 
+        "a4 <- area4 - a13 - a14 - a15 - a16 - a23 - a24 - a25 - a26 - a27 - a28 - a31 - a18 - a19 - a8 - a30", 
+        "a5 <- area5 - a6 - a7 - a15 - a16 - a17 - a18 - a25 - a26 - a27 - a28 - a31 - a20 - a29 - a21 - a10", 
+        "a6 <- n35 - a16 - a17 - a21 - a26 - a27 - a29 - a31", 
+        "a7 <- n15 - a17 - a18 - a20 - a27 - a28 - a29 - a31", 
+        "a8 <- n14 - a18 - a19 - a23 - a27 - a28 - a30 - a31", 
+        "a9 <- n12 - a19 - a20 - a22 - a28 - a29 - a30 - a31", 
+        "a10 <- n25 - a20 - a21 - a25 - a26 - a28 - a29 - a31", 
+        "a11 <- n23 - a21 - a22 - a24 - a26 - a29 - a30 - a31", 
+        "a12 <- n13 - a17 - a22 - a23 - a27 - a29 - a30 - a31", 
+        "a13 <- n34 - a16 - a23 - a24 - a26 - a27 - a30 - a31", 
+        "a14 <- n24 - a19 - a24 - a25 - a30 - a28 - a26 - a31", 
+        "a15 <- n45 - a18 - a25 - a16 - a28 - a27 - a26 - a31", 
+        "a16 <- n345 - a26 - a27 - a31", "a17 <- n135 - a27 - a29 - a31", 
+        "a18 <- n145 - a27 - a28 - a31", "a19 <- n124 - a28 - a30 - a31", 
+        "a20 <- n125 - a28 - a29 - a31", "a21 <- n235 - a26 - a29 - a31", 
+        "a22 <- n123 - a29 - a30 - a31", "a23 <- n134 - a27 - a30 - a31", 
+        "a24 <- n234 - a26 - a30 - a31", "a25 <- n245 - a26 - a28 - a31", 
+        "a26 <- n2345 - a31", "a27 <- n1345 - a31", "a28 <- n1245 - a31", 
+        "a29 <- n1235 - a31", "a30 <- n1234 - a31", "a31 <- n12345")
+    for (i in 1:length(areas)) {
+        if (areas[i] < 0) {
+            stop(paste("Impossible:", areas.error[i], "produces negative area"))
+        }
+    }
+    grob.list <- gList()
+    dist <- 0.13
+    a <- 0.24
+    b <- 0.46
+    init.angle <- -20
+    ellipse.positions <- matrix(nrow = 5, ncol = 3)
+    colnames(ellipse.positions) <- c("x", "y", "rotation")
+    ellipse.positions[1, ] <- c(0.5 + dist * sin(init.angle * 
+        pi/180), 0.5 + dist * cos(init.angle * pi/180), 0)
+    ellipse.positions[2, ] <- c(0.5 - dist * cos((288 + init.angle - 
+        270) * pi/180), 0.5 + dist * sin((288 + init.angle - 
+        270) * pi/180), -110)
+    ellipse.positions[3, ] <- c(0.5 - dist * sin((216 + init.angle - 
+        180) * pi/180), 0.5 - dist * cos((216 + init.angle - 
+        180) * pi/180), 145)
+    ellipse.positions[4, ] <- c(0.5 + dist * sin((180 - 144 - 
+        init.angle) * pi/180), 0.5 - dist * cos((180 - 144 - 
+        init.angle) * pi/180), 35)
+    ellipse.positions[5, ] <- c(0.5 + dist * cos((init.angle + 
+        72 - 90) * pi/180), 0.5 - dist * sin((init.angle + 72 - 
+        90) * pi/180), -72.5)
+    for (i in 1:5) {
+        grob.list <- gList(grob.list, VennDiagram::ellipse(x = ellipse.positions[i, 
+            "x"], y = ellipse.positions[i, "y"], a = a, b = b, 
+            rotation = ellipse.positions[i, "rotation"], gp = gpar(lty = 0, 
+                fill = fill[i], alpha = alpha[i])))
+    }
+    for (i in 1:5) {
+        grob.list <- gList(grob.list, VennDiagram::ellipse(x = ellipse.positions[i, 
+            "x"], y = ellipse.positions[i, "y"], a = a, b = b, 
+            rotation = ellipse.positions[i, "rotation"], gp = gpar(lwd = lwd[i], 
+                lty = lty[i], col = col[i], fill = "transparent")))
+    }
+    label.matrix <- matrix(nrow = 31, ncol = 3)
+    colnames(label.matrix) <- c("label", "x", "y")
+    label.matrix[1, ] <- c(a1, 0.4555, 0.9322)
+    label.matrix[2, ] <- c(a2, 0.08, 0.6)
+    label.matrix[3, ] <- c(a3, 0.3, 0.1)
+    label.matrix[4, ] <- c(a4, 0.79, 0.17)
+    label.matrix[5, ] <- c(a5, 0.9, 0.68)
+    label.matrix[6, ] <- c(a6, 0.74, 0.695)
+    label.matrix[7, ] <- c(a7, 0.63, 0.805)
+    label.matrix[8, ] <- c(a8, 0.4, 0.795)
+    label.matrix[9, ] <- c(a9, 0.255, 0.715)
+    label.matrix[10, ] <- c(a10, 0.193, 0.48)
+    label.matrix[11, ] <- c(a11, 0.225, 0.333)
+    label.matrix[12, ] <- c(a12, 0.42, 0.205)
+    label.matrix[13, ] <- c(a13, 0.572, 0.18)
+    label.matrix[14, ] <- c(a14, 0.753, 0.32)
+    label.matrix[15, ] <- c(a15, 0.823, 0.47)
+    label.matrix[16, ] <- c(a16, 0.747, 0.582)
+    label.matrix[17, ] <- c(a17, 0.662, 0.75)
+    label.matrix[18, ] <- c(a18, 0.488, 0.761)
+    label.matrix[19, ] <- c(a19, 0.323, 0.737)
+    label.matrix[20, ] <- c(a20, 0.253, 0.573)
+    label.matrix[21, ] <- c(a21, 0.225, 0.395)
+    label.matrix[22, ] <- c(a22, 0.355, 0.29)
+    label.matrix[23, ] <- c(a23, 0.515, 0.205)
+    label.matrix[24, ] <- c(a24, 0.655, 0.29)
+    label.matrix[25, ] <- c(a25, 0.783, 0.42)
+    label.matrix[26, ] <- c(a26, 0.72, 0.445)
+    label.matrix[27, ] <- c(a27, 0.605, 0.701)
+    label.matrix[28, ] <- c(a28, 0.342, 0.668)
+    label.matrix[29, ] <- c(a29, 0.294, 0.41)
+    label.matrix[30, ] <- c(a30, 0.522, 0.273)
+    label.matrix[31, ] <- c(a31, 0.5, 0.5)
+    for (i in 1:nrow(label.matrix)) {
+        tmp <- textGrob(label = label.matrix[i, "label"], x = label.matrix[i, 
+            "x"], y = label.matrix[i, "y"], gp = gpar(col = label.col[i], 
+            cex = cex[i], fontface = fontface[i], fontfamily = fontfamily[i]))
+        grob.list <- gList(grob.list, tmp)
+    }
+    cat.pos.x <- c(0.4555, 0.08, 0.3, 0.79, 0.9)
+    cat.pos.y <- c(0.9322, 0.6, 0.1, 0.17, 0.68)
+    for (i in 1:5) {
+        this.cat.pos <- find.cat.pos(x = cat.pos.x[i], y = cat.pos.y[i], 
+            pos = cat.pos[i], dist = cat.dist[i])
+        grob.list <- gList(grob.list, textGrob(label = category[i], 
+            x = this.cat.pos$x, y = this.cat.pos$y, just = cat.just[[i]], 
+            gp = gpar(col = cat.col[i], cex = cat.cex[i], fontface = cat.fontface[i], 
+                fontfamily = cat.fontfamily[i])))
+    }
+    grob.list <- VennDiagram::adjust.venn(VennDiagram::rotate.venn.degrees(grob.list, 
+        rotation.degree, rotation.centre[1], rotation.centre[2]), 
+        ...)
+    if (ind) {
+        grid.draw(grob.list)
+    }
+    return(grob.list)
+}
+
+###############################################################
 
 data_filtered <- filterData(data)
 
@@ -76,14 +353,28 @@ n1345 <- sum(apply(maternal_trisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)
 n2345 <- sum(apply(paternal_trisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(maternal_monosomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(paternal_monosomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(nullisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0)
 n12345 <- sum(apply(maternal_trisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(paternal_trisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(maternal_monosomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(paternal_monosomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(nullisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0)
 
-countsA <- draw.quintuple.venn(area1 = area1, area2 = area2, area3 = area3, area4 = area4, area5 = area5, 
-n12 = n12, n13 = n13, n14 = n14, n15 = n15, n23 = n23, n24 = n24, n25 = n25, n34 = n34, n35 = n35, 
-n45 = n45, n123 = n123, n124 = n124, n125 = n125, n134 = n134, n135 = n135, n145 = n145, n234 = n234, 
-n235 = n235, n245 = n245, n345 = n345, n1234 = n1234, n1235 = n1235, n1245 = n1245, n1345 = n1345, 
-n2345 = n2345, n12345 = n12345, category=c("Maternal Trisomy", "Paternal Trisomy", "Maternal Monosomy", 
+list <- c(area1, area2, area3, area4, area5, n12, n13, n14, n15, n23, n24, n25, n34, n35, n45, n123, n124, n125, n134, n135, n145, n234,
+n235, n245, n345, n1234, n1235, n1245, n1345, n2345, n12345)
+
+list <- (list / nrow(data_blastomere)) * 100
+
+formatDec <- function(x, k) {
+	format(round(x, k), nsmall=k)
+}
+
+list <- as.numeric(formatDec(list, 2))
+
+pdf("~/Desktop/blast_venn.pdf")
+
+draw.quintuple.venn_mod(area1 = list[1], area2 = list[2],, area3 = list[3], area4 = list[4], area5 = list[5], 
+n12 = list[6], n13 = list[7], n14 = list[8], n15 = list[9], n23 = list[10], n24 = list[11], n25 = list[12], n34 = list[13], n35 = list[14], 
+n45 = list[15], n123 = list[16], n124 = list[17], n125 = list[18], n134 = list[19], n135 = list[20], n145 = list[21], n234 = list[22], 
+n235 = list[23], n245 = list[24], n345 = list[25], n1234 = list[26], n1235 = list[27], n1245 = list[28], n1345 = list[29], 
+n2345 = list[30], n12345 = list[31], category=c("Maternal Trisomy", "Paternal Trisomy", "Maternal Monosomy", 
 "Paternal Monosomy", "Nullisomy"), lwd=c(0,0,0,0,0), fill=c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3", 
 "#ff7f00"),  fontfamily = "sans")
 
+dev.off()
 
 #################################################################
 
@@ -150,10 +441,25 @@ n1345 <- sum(apply(maternal_trisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)
 n2345 <- sum(apply(paternal_trisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(maternal_monosomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(paternal_monosomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(nullisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0)
 n12345 <- sum(apply(maternal_trisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(paternal_trisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(maternal_monosomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(paternal_monosomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0 & apply(nullisomy_frame[,1:23], 1, function(x) sum(x[!is.na(x)] == TRUE)) > 0)
 
-countsB <- draw.quintuple.venn(area1 = area1, area2 = area2, area3 = area3, area4 = area4, area5 = area5, 
-n12 = n12, n13 = n13, n14 = n14, n15 = n15, n23 = n23, n24 = n24, n25 = n25, n34 = n34, n35 = n35, 
-n45 = n45, n123 = n123, n124 = n124, n125 = n125, n134 = n134, n135 = n135, n145 = n145, n234 = n234, 
-n235 = n235, n245 = n245, n345 = n345, n1234 = n1234, n1235 = n1235, n1245 = n1245, n1345 = n1345, 
-n2345 = n2345, n12345 = n12345, category=c("Maternal Trisomy", "Paternal Trisomy", "Maternal Monosomy", 
+list <- c(area1, area2, area3, area4, area5, n12, n13, n14, n15, n23, n24, n25, n34, n35, n45, n123, n124, n125, n134, n135, n145, n234,
+n235, n245, n345, n1234, n1235, n1245, n1345, n2345, n12345)
+
+list <- (list / nrow(data_te)) * 100
+
+formatDec <- function(x, k) {
+	format(round(x, k), nsmall=k)
+}
+
+list <- as.numeric(formatDec(list, 2))
+
+pdf("~/Desktop/te_venn.pdf")
+
+draw.quintuple.venn_mod(area1 = list[1], area2 = list[2],, area3 = list[3], area4 = list[4], area5 = list[5], 
+n12 = list[6], n13 = list[7], n14 = list[8], n15 = list[9], n23 = list[10], n24 = list[11], n25 = list[12], n34 = list[13], n35 = list[14], 
+n45 = list[15], n123 = list[16], n124 = list[17], n125 = list[18], n134 = list[19], n135 = list[20], n145 = list[21], n234 = list[22], 
+n235 = list[23], n245 = list[24], n345 = list[25], n1234 = list[26], n1235 = list[27], n1245 = list[28], n1345 = list[29], 
+n2345 = list[30], n12345 = list[31], category=c("Maternal Trisomy", "Paternal Trisomy", "Maternal Monosomy", 
 "Paternal Monosomy", "Nullisomy"), lwd=c(0,0,0,0,0), fill=c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3", 
 "#ff7f00"),  fontfamily = "sans")
+
+dev.off()
