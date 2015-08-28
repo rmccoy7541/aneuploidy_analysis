@@ -33,6 +33,25 @@ aneuploidChroms <- function(data) {
 
 ####################################################
 
+trisomy <- function(data) {
+	aneuploid_frame <- data.frame(matrix(ncol = 23, nrow = nrow(data)))
+	for (i in 7:29) {
+		new <- ((data[, i, with = F] == "H120") | (data[, i, with = F] == "H102") | (data[, i, with = F] == "H210")) & (data[, i + 69, with = F] != 1)
+		aneuploid_frame[, i - 6] <- new
+	}
+	return(rowSums(aneuploid_frame, na.rm = T))
+}
+
+sum(trisomy(data_blastomere) == 1 & aneuploidChroms(data_blastomere) == 1) 
+singleTrisomy <- sum(trisomy(data_blastomere) == 1 & aneuploidChroms(data_blastomere) == 1) / nrow(data_blastomere)
+se(singleTrisomy, nrow(data_blastomere))
+
+sum(trisomy(data_te) == 1 & aneuploidChroms(data_te) == 1) 
+singleTrisomy <- sum(trisomy(data_te) == 1 & aneuploidChroms(data_te) == 1) / nrow(data_te)
+se(singleTrisomy, nrow(data_te))
+
+####################################################
+
 maternalTrisomy <- function(data) {
 	aneuploid_frame <- data.frame(matrix(ncol = 23, nrow = nrow(data)))
 	for (i in 7:29) {
