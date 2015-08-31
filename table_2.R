@@ -31,6 +31,25 @@ aneuploidChroms <- function(data) {
 	return(rowSums(aneuploid_frame, na.rm = T))
 }
 
+totalChroms <- function(data) {
+	chroms_frame <- data.frame(matrix(ncol = 23, nrow = nrow(data)))
+	aneuploid_frame <- data[, 7:29, with = F]
+	chroms_frame[aneuploid_frame == "H110"] <- 2
+	chroms_frame[aneuploid_frame == "H101"] <- 2
+	chroms_frame[aneuploid_frame == "H011"] <- 2
+	chroms_frame[aneuploid_frame == "H210"] <- 3
+	chroms_frame[aneuploid_frame == "H120"] <- 3
+	chroms_frame[aneuploid_frame == "H111"] <- 3
+	chroms_frame[aneuploid_frame == "H201"] <- 3
+	chroms_frame[aneuploid_frame == "H102"] <- 3
+	chroms_frame[aneuploid_frame == "H100"] <- 1
+	chroms_frame[aneuploid_frame == "H010"] <- 1
+	chroms_frame[aneuploid_frame == "H001"] <- 1
+	chroms_frame[aneuploid_frame == "H000"] <- 0
+	return(rowSums(chroms_frame, na.rm = T))
+}
+
+
 ####################################################
 
 trisomy <- function(data) {
@@ -147,6 +166,16 @@ se(singleNullisomy, nrow(data_te))
 
 ####################################################
 
+sum(trisomy(data_blastomere) > 19)
+triploidy <- sum(trisomy(data_blastomere) > 19) / nrow(data_blastomere)
+se(triploidy, nrow(data_blastomere))
+
+sum(trisomy(data_te) > 19)
+triploidy <- sum(trisomy(data_te) > 19) / nrow(data_te)
+se(triploidy, nrow(data_te))
+
+####################################################
+
 sum(maternalTrisomy(data_blastomere) > 19)
 matTriploidy <- sum(maternalTrisomy(data_blastomere) > 19) / nrow(data_blastomere)
 se(matTriploidy, nrow(data_blastomere))
@@ -164,6 +193,16 @@ se(patTriploidy, nrow(data_blastomere))
 sum(paternalTrisomy(data_te) > 19)
 patTriploidy <- sum(paternalTrisomy(data_te) > 19) / nrow(data_te)
 se(patTriploidy, nrow(data_te))
+
+####################################################
+
+sum(monosomy(data_blastomere) > 19)
+haploidy <- sum(monosomy(data_blastomere) > 19) / nrow(data_blastomere)
+se(haploidy, nrow(data_blastomere))
+
+sum(monosomy(data_te) > 19)
+haploidy <- sum(monosomy(data_te) > 19) / nrow(data_te)
+se(haploidy, nrow(data_te))
 
 ####################################################
 
