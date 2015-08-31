@@ -71,6 +71,6 @@ results_te$X6 <- "Day-5 TE"
 
 results_all_chroms <- rbind(results_blastomere, results_te)
 
-c <- ggplot(data = results_all_chroms[results_all_chroms$X5 > 9 | is.na(results_all_chroms$X5),], aes(x = X3, y = X1)) + geom_errorbar(limits, width = 0.5) + geom_line() + geom_point() + xlab("Paternal Age") + ylab("Prop. with Mitotic Aneuploidy") + theme(legend.position = "right") + theme_bw() + scale_color_discrete(name = "")
+c <- ggplot(data = results_all_chroms[results_all_chroms$X5 > 9 | is.na(results_all_chroms$X5),], aes(x = X3, y = X1)) + geom_errorbar(limits, width = 0.5) + geom_line() + geom_point() + xlab("Paternal Age") + ylab("Prop. with Mitotic Error") + theme(legend.position = "right") + theme_bw() + scale_color_discrete(name = "")
 
 c <- c + facet_grid(. ~ X6)
