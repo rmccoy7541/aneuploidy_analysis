@@ -102,7 +102,7 @@ chroms_affected_frame$se <- sqrt((chroms_affected_frame$prop * (1 - chroms_affec
 limits <- aes(ymax = prop + se, ymin = prop - se)
 
 a <- ggplot(data = chroms_affected_frame, aes(x = chromosome, y = prop, color = factor(maternal_age))) + 
-  theme_bw() + geom_point() + ylim(0,1) + xlab("Number of Aneuploid Chromosomes") + ylab("\u2640 / (\u2640 + \u2642)") + 
+  theme_bw() + geom_point() + ylim(0,1) + xlab("Number of Affected Chromosomes") + ylab("\u2640 / (\u2640 + \u2642)") + 
   labs(color = "Maternal Age", linetype="Maternal Age", shape="Maternal Age") + geom_errorbar(limits, width = 0.25) + 
   geom_line() + geom_hline(aes(yintercept = 0.5), lty = "dotted") 
 
@@ -145,7 +145,10 @@ chroms_affected_frame$se <- sqrt((chroms_affected_frame$prop * (1 - chroms_affec
 
 limits <- aes(ymax = prop + se, ymin = prop - se)
 
-b <- ggplot(data = chroms_affected_frame, aes(x = chromosome, y = prop, color = factor(maternal_age))) + theme_bw() + geom_point() + ylim(0, 1) + xlab("Number of Aneuploid Chromosomes") + ylab("Gains / (Gains + Losses)") + labs(color = "Maternal Age", linetype="Maternal Age", shape="Maternal Age") + geom_errorbar(limits, width = 0.25) + geom_line() + geom_hline(aes(yintercept = 0.5), lty = "dotted")
+b <- ggplot(data = chroms_affected_frame, aes(x = chromosome, y = prop, color = factor(maternal_age))) + theme_bw() + geom_point() + 
+ylim(0, 1) + xlab("Number of Affected Chromosomes") + ylab("Gains / (Gains + Losses)") + 
+labs(color = "Maternal Age", linetype="Maternal Age", shape="Maternal Age") + geom_errorbar(limits, width = 0.25) + 
+geom_line() + geom_hline(aes(yintercept = 0.5), lty = "dotted")
 b <- b + facet_grid(. ~ sample_type)
 
 gains_results <- chroms_affected_frame
@@ -156,7 +159,7 @@ grid.arrange(a, b, nrow = 2)
 
 
 c <- ggplot(data = chroms_affected_frame, aes(x = chromosome, y = prop, color = factor(maternal_age))) + 
-  theme_bw() + ylim(0,1) + xlab("Number of Aneuploid Chromosomes") + ylab("\u2640 / (\u2640 + \u2642)") + 
+  theme_bw() + ylim(0,1) + xlab("Number of Affected Chromosomes") + ylab("\u2640 / (\u2640 + \u2642)") + 
   labs(color = "Maternal Age", linetype="Maternal Age", shape="Maternal Age")  + 
   geom_blank() + geom_hline(aes(yintercept = 0.5), lty = "dotted") 
 
