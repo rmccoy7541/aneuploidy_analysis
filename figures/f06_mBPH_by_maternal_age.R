@@ -71,7 +71,7 @@ results_te$X6 <- "Day-5 TE"
 
 results_all_chroms <- rbind(results_blastomere, results_te)
 
-c <- ggplot(data = results_all_chroms[results_all_chroms$X5 > 9 | is.na(results_all_chroms$X5),], aes(x = X3, y = X1)) + geom_errorbar(limits, width = 0.5) + geom_line() + geom_point() + xlab("Maternal Age") + ylab("Prop. with Maternal BPH Aneuploidy") + theme(legend.position = "right") + theme_bw() + scale_color_discrete(name = "")
+c <- ggplot(data = results_all_chroms[results_all_chroms$X5 > 9 | is.na(results_all_chroms$X5),], aes(x = X3, y = X1)) + geom_errorbar(limits, width = 0.5) + geom_line() + geom_point() + xlab("Maternal Age") + ylab("Prop. with Maternal BPH Error") + theme(legend.position = "right") + theme_bw() + scale_color_discrete(name = "")
 
 c <- c + facet_grid(. ~ X6)
 
@@ -84,11 +84,11 @@ meiotic_te <- meioticByCase(data_te)
 
 
 maternal_age <- data.frame(aggregate(data$maternal_age ~ data$case, FUN = mean))
-names(maternal_age) <- c("i", "maternal_age")
-meiotic_blastomere <- merge(meiotic_blastomere, maternal_age, "i")
-meiotic_te <- merge(meiotic_te, maternal_age, "i")
+names(maternal_age) <- c("case", "maternal_age")
+meiotic_blastomere <- merge(meiotic_blastomere, maternal_age, "case")
+meiotic_te <- merge(meiotic_te, maternal_age, "case")
 
 
-summary(glm(data = meiotic_blastomere, formula = cbind(euploid, meiotic) ~ maternal_age, family = quasibinomial(link = "logit")))
-summary(glm(data = meiotic_te, formula = cbind(euploid, meiotic) ~ maternal_age, family = quasibinomial(link = "logit")))
+summary(glm(data = meiotic_blastomere, formula = cbind(euploid, aneuploid) ~ maternal_age, family = quasibinomial(link = "logit")))
+summary(glm(data = meiotic_te, formula = cbind(euploid, aneuploid) ~ maternal_age, family = quasibinomial(link = "logit")))
 
