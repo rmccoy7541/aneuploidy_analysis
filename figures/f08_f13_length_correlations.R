@@ -73,7 +73,7 @@ meiotic_lengths <- rbind(meiotic_blastomere_lengths, meiotic_te_lengths)
 
 limits <- aes(ymax = prop + se, ymin = prop - se, xmin = length, xmax = length)
 
-a <- ggplot(data = meiotic_lengths, aes(y = prop, x = length)) + theme_bw() + geom_errorbar(limits) + theme(axis.text.x = element_text(angle = 65, hjust = 1)) + ylab("Prop. with Maternal BPH Aneuploidy") + xlab("Chromosome Length (bp)") + geom_text(aes(label = chrom), color = "gray")
+a <- ggplot(data = meiotic_lengths, aes(y = prop, x = length)) + theme_bw() + geom_errorbar(limits) + theme(axis.text.x = element_text(angle = 65, hjust = 1)) + ylab("Prop. with Maternal BPH Error") + xlab("Chromosome Length (bp)") + geom_text(aes(label = chrom), color = "gray")
 
 a + facet_grid(. ~ type)
 
@@ -85,7 +85,7 @@ mitotic_lengths <- rbind(mitotic_blastomere_lengths, mitotic_te_lengths)
 
 limits <- aes(ymax = prop + se, ymin = prop - se, xmin = length, xmax = length)
 
-b <- ggplot(data = mitotic_lengths, aes(y = prop, x = length)) + theme_bw() + geom_errorbar(limits) + theme(axis.text.x = element_text(angle = 65, hjust = 1)) + ylab("Prop. with Mitotic Aneuploidy") + xlab("Chromosome Length (bp)") + geom_text(aes(label = chrom), color = "gray")
+b <- ggplot(data = mitotic_lengths, aes(y = prop, x = length)) + theme_bw() + geom_errorbar(limits) + theme(axis.text.x = element_text(angle = 65, hjust = 1)) + ylab("Prop. with Mitotic Error") + xlab("Chromosome Length (bp)") + geom_text(aes(label = chrom), color = "gray")
 
 b + facet_grid(. ~ type)
 
