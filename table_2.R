@@ -114,8 +114,9 @@ set.seed(42)
 data_sampled <- rbind(data_blastomere[sample(nrow(data_te)),], data_te)
 
 df <- data.frame(mat = data_sampled$maternalChroms, pat = data_sampled$paternalChroms, sample_type = data_sampled$sample_type)
-p <- ggplot(df, aes(x = mat, y = pat)) + stat_binhex() + scale_fill_gradient(name = "count", trans = "log", breaks = 10^(0:6))
-p + facet_grid(. ~ sample_type) + theme_bw()
+levels(df$sample_type) <- c("Day-3 Blastomere", "Day-5 TE Biopsy")
+p <- ggplot(df, aes(x = mat, y = pat)) + stat_binhex() + scale_fill_gradientn(colours = rev(rainbow(3)), name = "Samples", trans = "log", breaks = 10^(0:6))
+p + facet_grid(. ~ sample_type) + theme_bw() + ylab('Number of Paternal Chromosomes') + xlab('Number of Maternal Chromosomes')
 
 ####################################################
 
