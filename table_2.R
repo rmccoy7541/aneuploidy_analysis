@@ -11,14 +11,13 @@ data <- fread(url, sep=",", header=T)
 
 data_filtered <- filterDataTable(data)
 
+data_filtered <- callPloidyTable(data_filtered)
+
 data_blastomere <- selectSampleType(data_filtered, blastomere)
 data_te <- selectSampleType(data_filtered, TE)
 
 ####################################################
 
-se <- function(p, n) {
-	sqrt((p * (1 - p)) / n)
-}
 
 ####################################################
 
@@ -30,6 +29,25 @@ aneuploidChroms <- function(data) {
 	}
 	return(rowSums(aneuploid_frame, na.rm = T))
 }
+
+maternalErrs <- function(data) {
+	maternal_frame <- data.frame(matrix(ncol = 23, nrow = nrow(data)))
+	for (i in 7:29) {
+	  new <- (data[, i, with = F] == "H200" | data[, i, with = F] == "H020" | data[, i, with = F] == "H010" | data[, i, with = F] == "H001" | data[, i, with = F] == "H000" | data[, i, with = F] == "H210" | data[, i, with = F] == "H201" | data[, i, with = F] == "H021") & (data[, i + 69, with = F] != 1)
+	  maternal_frame[, i - 6] <- new
+	}
+	return(rowSums(maternal_frame, na.rm = T))
+}
+
+paternalErrs <- function(data) {
+	paternal_frame <- data.frame(matrix(ncol = 23, nrow = nrow(data)))
+	for (i in 7:29) {
+	  new <- (data[, i, with = F] == "H200" | data[, i, with = F] == "H020" | data[, i, with = F] == "H100" | data[, i, with = F] == "H000" | data[, i, with = F] == "H102" | data[, i, with = F] == "H120" | data[, i, with = F] == "H201" | data[, i, with = F] == "H021" | data[, i, with = F] == "H111") & (data[, i + 69, with = F] != 1)
+	  paternal_frame[,i - 6] <- new
+	}
+	return(rowSums(paternal_frame, na.rm = T))
+}
+
 
 totalChroms <- function(data) {
 	chroms_frame <- data.frame(matrix(ncol = 23, nrow = nrow(data)))
@@ -85,7 +103,6 @@ totalPatChroms <- function(data) {
 	return(rowSums(chroms_frame, na.rm = T))
 }
 
-set.seed(42)
 data_blastomere$maternalChroms <- totalMatChroms(data_blastomere)
 data_blastomere$paternalChroms <- totalPatChroms(data_blastomere)
 data_blastomere$totalChroms <- totalChroms(data_blastomere)
@@ -93,6 +110,7 @@ data_te$maternalChroms <- totalMatChroms(data_te)
 data_te$paternalChroms <- totalPatChroms(data_te)
 data_te$totalChroms <- totalChroms(data_te)
 
+set.seed(42)
 data_sampled <- rbind(data_blastomere[sample(nrow(data_te)),], data_te)
 
 df <- data.frame(mat = data_sampled$maternalChroms, pat = data_sampled$paternalChroms, sample_type = data_sampled$sample_type)
@@ -273,3 +291,12 @@ sum(paternalMonosomy(data_te) > 19)
 patHaploidy <- sum(paternalMonosomy(data_te) > 19) / nrow(data_te)
 se(patHaploidy, nrow(data_te))
 
+####################################################
+
+sum(aneuploidChroms(data_blastomere) > 2 & aneuploidChroms(data_blastomere) < 20 )
+complex <- sum(aneuploidChroms(data_blastomere) > 2 & aneuploidChroms(data_blastomere) < 20 ) / nrow(data_blastomere)
+se(complex, nrow(data_blastomere))
+
+sum(aneuploidChroms(data_te) > 2 & aneuploidChroms(data_te) < 20 )
+complex <- sum(aneuploidChroms(data_te) > 2 & aneuploidChroms(data_te) < 20 ) / nrow(data_te)
+se(complex, nrow(data_te))
