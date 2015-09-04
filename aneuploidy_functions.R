@@ -17,6 +17,16 @@ filterData <- function(data) {
 	data_calls <- data_calls[(apply(data_calls, 1, function(x) sum(is.na(x))) < 5),] # remove samples with 5+ no-calls
 	data_calls <- data_calls[(apply(data_calls, 1, function(x) sum(x[!is.na(x)] == "H000")) != 23),] # remove whole genome nullisomy
 	data_filtered <- data[row.names(data_calls),] #recover the original data frame, with all chrom. nullisomy and any chrom. no-calls filtered out
+	return(data_filtered)
+}
+
+filterDataTable <- function(data) {
+	data <- data.frame(data)
+	data_calls <- data[,7:29]; nrow(data_calls)
+	data_calls <- data_calls[(apply(data_calls, 1, function(x) sum(is.na(x))) < 5),] # remove samples with 5+ no-calls
+	data_calls <- data_calls[(apply(data_calls, 1, function(x) sum(x[!is.na(x)] == "H000")) != 23),] # remove whole genome nullisomy
+	data_filtered <- data[row.names(data_calls),] #recover the original data frame, with all chrom. nullisomy and any chrom. no-calls filtered out
+	return(data.table(data_filtered))
 }
 
 # Function: selectSampleType(data, sampleType)
