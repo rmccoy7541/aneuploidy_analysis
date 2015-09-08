@@ -7,7 +7,7 @@ library(ggplot2)
 library(gridExtra)
 library(RCurl)
 library(data.table)
-source('~/Desktop/aneuploidy-analysis/aneuploidy_functions.R', chdir = TRUE)
+source('~/Desktop/aneuploidy_analysis-master/aneuploidy_functions.R', chdir = TRUE)
 
 URL <- "https://raw.githubusercontent.com/rmccoy7541/aneuploidy-analysis/master/data/aaa3337-McCoy-SM.table_S2.csv" # import the data
 url <- getURL(URL)
