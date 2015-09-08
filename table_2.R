@@ -115,6 +115,7 @@ data_te$totalChroms <- totalChroms(data_te)
 
 set.seed(42)
 data_sampled <- rbind(data_blastomere[sample(nrow(data_te)),], data_te)
+data_unsampled <- rbind(data_blastomere, data_te)
 
 df <- data.frame(mat = data_sampled$maternalChroms, pat = data_sampled$paternalChroms, sample_type = data_sampled$sample_type)
 levels(df$sample_type) <- c("Day-3 Blastomere", "Day-5 TE Biopsy")
@@ -122,11 +123,22 @@ df2 <- data.frame(table(df))
 df2$mat <- as.numeric(df2$mat)
 df2$pat <- as.numeric(df2$pat)
 
+df3 <- data.frame(table(data.frame(mat = data_unsampled$maternalChroms, pat = data_unsampled$paternalChroms, sample_type = data_unsampled$sample_type)))
+df3$prop <- NA
+df3[df3$sample_type == "blastomere",]$prop <- df3[df3$sample_type == "blastomere",]$Freq / nrow(data_blastomere)
+df3[df3$sample_type == "TE",]$prop <- df3[df3$sample_type == "TE",]$Freq / nrow(data_te)
+df3$mat <- as.numeric(df3$mat)
+df3$pat <- as.numeric(df3$pat)
+levels(df3$sample_type) <- c("Day-3 Blastomere", "Day-5 TE Biopsy")
+
 p <- ggplot(df, aes(x = mat, y = pat)) + stat_binhex() + scale_fill_gradientn(colours = rev(rainbow(3)), name = "Samples", trans = "log", breaks = 10^(0:6))
 p + facet_grid(. ~ sample_type) + theme_bw() + ylab('Number of Paternal Chromosomes') + xlab('Number of Maternal Chromosomes')
 
 q <- ggplot(df2[df2$Freq != 0,], aes(x = mat, y = pat, fill = Freq)) + geom_tile() + scale_fill_gradientn(colours = rev(rainbow(3)), name = "Samples", trans = "log", breaks = 10^(0:6))
 q + facet_grid(. ~ sample_type) + theme_bw() + ylab('Number of Paternal Chromosomes') + xlab('Number of Maternal Chromosomes')
+
+r <- ggplot(df3[df3$prop != 0,], aes(x = mat, y = pat, fill = prop)) + geom_tile() + scale_fill_gradientn(colours = rev(rainbow(3)), name = "Proportion", trans = "log", breaks = 10^(-6:-0))
+r + facet_grid(. ~ sample_type) + theme_bw() + ylab('Number of Paternal Chromosomes') + xlab('Number of Maternal Chromosomes')
 
 ####################################################
 
