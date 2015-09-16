@@ -56,6 +56,25 @@ callPloidy <- function(data) {
 	return(data)
 }
 
+# Function: callPloidyTable
+# Adds a new boolean field called 'ploidy' that indicates whole-chromosome aneuploidy with 'FALSE'
+callPloidyTable <- function(data) {
+	data <- data.frame(data)
+	aneuploid_frame <- data.frame(matrix(ncol = 23, nrow = nrow(data)))
+	for (i in 7:29) {
+		new <- (data[,i] != "H110" & data[,i] != "H101" & data[,i+69] != 1)
+		aneuploid_frame[,i-6] <- new
+	}
+	
+	chroms_affected <- apply(aneuploid_frame, 1, function(x) sum(x[!is.na(x)]==TRUE))
+	data$chroms_affected <- chroms_affected
+	
+	aneuploid_indicator <- (apply(aneuploid_frame[,1:23], 1, function(x) sum(x[!is.na(x)]==TRUE)) > 0) # if any chromosome is aneuploid, call sample aneuploid
+	data$ploidy<-TRUE
+	data$ploidy[aneuploid_indicator]<-FALSE
+	return(data.table(data))
+}
+
 # Function: callMeiotic
 # Adds a new boolean field called 'meiotic' that indicates a BPH aneuploidy (maternal or paternal)
 callMeiotic <- function(data) {
