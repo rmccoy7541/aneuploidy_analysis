@@ -1,5 +1,11 @@
+#################################################################
+# This file generates a Venn Diagram of co-occurrence of        #
+# different aneuploidies in complex aneuploid biopsies.         #
+#################################################################
+
 library(ggplot2)
 library(gridExtra)
+library(VennDiagram)
 library(RCurl)
 library(data.table)
 
