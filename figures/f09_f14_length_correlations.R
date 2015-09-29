@@ -33,14 +33,14 @@ for (i in 7:29) {
   	te_meiotic[,i - 6] <- new
 }
 
-blastomere_mitotic <- data.frame(matrix(ncol = 23, nrow = nrow(data_blastomere)))
-for (i in 7:29) {
+blastomere_mitotic <- data.frame(matrix(ncol = 22, nrow = nrow(data_blastomere)))
+for (i in 7:28) {
 	new <- (data_blastomere[,i] == "H120" | data_blastomere[,i] == "H100" | data_blastomere[,i] == "H102") & (data_blastomere[,i+46] != 1 & data_blastomere[,i+69] != 1)
   	blastomere_mitotic[,i - 6] <- new
 }
 
-te_mitotic <- data.frame(matrix(ncol = 23, nrow = nrow(data_te)))
-for (i in 7:29) {
+te_mitotic <- data.frame(matrix(ncol = 22, nrow = nrow(data_te)))
+for (i in 7:28) {
 	new <- (data_te[,i] == "H120" | data_te[,i] == "H100" | data_te[,i] == "H102") & (data_te[,i+46] != 1 & data_te[,i+69] != 1)
   	te_mitotic[,i - 6] <- new
 }
@@ -50,10 +50,14 @@ lengthCorrelation <- function(data_frame, sexChrom) {
   n <- apply(data_frame, 2, function(x) sum(!is.na(x)))
   if (sexChrom == "X") {
     chromLengths <- c(chromLengths, 155270560)
+    chromList <- c(1:22, sexChrom)
   } else if (sexChrom == "Y") {
     chromLengths <- c(chromLengths, 59373566)
+    chromList <- c(1:22, sexChrom)
+  } else if (sexChrom == "NA") {
+    chromList <- 1:22
   }
-  lengths <- data.frame(apply(data_frame, 2, function(x) sum(x[!is.na(x)] == TRUE)),apply(data_frame, 2, function(x) sum(!is.na(x))), chromLengths, c(1:22, sexChrom))
+  lengths <- data.frame(apply(data_frame, 2, function(x) sum(x[!is.na(x)] == TRUE)),apply(data_frame, 2, function(x) sum(!is.na(x))), chromLengths, chromList)
   names(lengths) <- c("affected", "total","length", "chrom")
   
   print(cor.test(lengths$affected / lengths$total, lengths$length))
@@ -77,9 +81,9 @@ a <- ggplot(data = meiotic_lengths, aes(y = prop, x = length)) + theme_bw() + ge
 
 a + facet_grid(. ~ type)
 
-mitotic_blastomere_lengths <- lengthCorrelation(blastomere_mitotic, "Y") 
+mitotic_blastomere_lengths <- lengthCorrelation(blastomere_mitotic, "NA") 
 mitotic_blastomere_lengths$type <- "Day-3 Blastomere"
-mitotic_te_lengths <- lengthCorrelation(te_mitotic, "Y") 
+mitotic_te_lengths <- lengthCorrelation(te_mitotic, "NA") 
 mitotic_te_lengths$type <- "Day-5 TE"
 mitotic_lengths <- rbind(mitotic_blastomere_lengths, mitotic_te_lengths)
 
