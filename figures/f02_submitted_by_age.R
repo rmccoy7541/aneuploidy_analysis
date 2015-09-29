@@ -5,7 +5,7 @@
 library(ggplot2)
 library(gridExtra)
 library(RCurl)
-source("~/Desktop/aneuploidy_functions.R")
+source("~/Desktop/aneuploidy_analysis-master/aneuploidy_functions.R")
 
 URL <- "https://raw.githubusercontent.com/rmccoy7541/aneuploidy-analysis/master/data/aaa3337-McCoy-SM.table_S2.csv" # import the data
 url <- getURL(URL)
@@ -55,5 +55,6 @@ results_all_chroms <- rbind(blastomere_count_results, te_count_results)
 limits<-aes(ymax=(X1+X2), ymin=(X1-X2))
 
 ggplot(data = results_all_chroms, aes(x = X3, y = X1, col = factor(X4))) + 
-  geom_errorbar(limits, width = 0.5) + geom_line() + geom_point() + xlab("Maternal Age") + ylab("Biopsies Submitted for Testing") + 
-  theme(legend.position = "right") + theme_bw() + scale_color_discrete(name = "") + ylim(0, 17)
+  geom_errorbar(limits, width = 0.5) + geom_line() + geom_point() + xlab("Maternal Age") + 
+  ylab("Biopsies Submitted for Testing") + theme(legend.position = "right") + theme_bw() + 
+  scale_color_discrete(name = "") + ylim(0, 17)
