@@ -286,6 +286,15 @@ se(patTriploidy, nrow(data_te))
 
 ####################################################
 
+monosomy <- function(data) {
+	aneuploid_frame <- data.frame(matrix(ncol = 23, nrow = nrow(data)))
+	for (i in 7:29) {
+		new <- ((data[, i, with = F] == "H100") | (data[, i, with = F] == "H010") | (data[, i, with = F] == "H001")) & (data[, i + 69, with = F] != 1)
+		aneuploid_frame[, i - 6] <- new
+	}
+	return(rowSums(aneuploid_frame, na.rm = T))
+}
+
 sum(monosomy(data_blastomere) > 19)
 haploidy <- sum(monosomy(data_blastomere) > 19) / nrow(data_blastomere)
 se(haploidy, nrow(data_blastomere))
