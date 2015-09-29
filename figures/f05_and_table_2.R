@@ -1,6 +1,5 @@
 library(ggplot2)
 library(gridExtra)
-library(VennDiagram)
 library(RCurl)
 library(data.table)
 
