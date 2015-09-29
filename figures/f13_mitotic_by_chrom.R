@@ -58,6 +58,7 @@ limits <- aes(xmax = p + se, xmin = p - se, ymin = results[results$type == "Trop
 limits2 <- aes(ymax = p + se, ymin = p - se, xmin=results[results$type == "Blastomere, Day 3",]$p, xmax=results[results$type == "Blastomere, Day 3",]$p)
 b <- ggplot(data = results, aes(x = results[results$type == "Blastomere, Day 3",]$p, y = results[results$type == "Trophectoderm, Day 5",]$p)) + theme_bw() + geom_errorbarh(limits, data = results[results$type == "Blastomere, Day 3",]) + geom_errorbar(limits2, data = results[results$type == "Trophectoderm, Day 5",]) +  geom_text(color = "gray", aes(label = as.character(c(1:22, as.character("X/Y"))))) + xlab("Blastomere, Day 3") + ylab("Trophectoderm, Day 5")
 
+cor.test(results[results$type == "Blastomere, Day 3",]$p, results[results$type == "Trophectoderm, Day 5",]$p)
 
 c <- ggplot(data = data_filtered[data_filtered$meiotic == FALSE & data_filtered$mitotic == TRUE & data_filtered$chroms_affected > 0,], aes(x = chroms_affected, fill = factor(sample_type))) + theme_bw() + geom_histogram(binwidth = 1, position = "dodge") + xlab('Total Affected Chromosomes') + ylab('Number of Samples') + theme(legend.position="none")
 
